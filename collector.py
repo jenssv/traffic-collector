@@ -17,6 +17,7 @@ import csv
 import io
 import json
 import os
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -26,6 +27,12 @@ WIB = timezone(timedelta(hours=7))
 HERE = os.path.dirname(os.path.abspath(__file__))
 POINTS_FILE = os.path.join(HERE, "points.csv")
 OUTPUT_FILE = os.path.join(HERE, "data", "traffic.csv")
+
+# Key evaluasi TomTom membatasi jumlah request per detik. Request yang terlalu
+# rapat ditolak (terlihat sebagai HTTP 400), jadi beri jeda dan coba ulang.
+DELAY_BETWEEN_POINTS = 1.0  # detik
+RETRIES = 2
+RETRY_WAIT = 3.0  # detik
 
 TOMTOM_URL = "https://api.tomtom.com/traffic/services/4/flowSegmentData/absolute/10/json"
 WEATHER_URL = "https://api.open-meteo.com/v1/forecast"
@@ -61,7 +68,7 @@ def get_json(url, params, timeout=15):
 
 
 def load_points():
-    with open(POINTS_FILE, newline="", encoding="utf-8") as f:
+    with open(POINTS_FILE, newline="", encoding="utf-8-sig") as f:
         rows = [r for r in csv.DictReader(f) if r.get("point_id") and not r["point_id"].startswith("#")]
     if not rows:
         raise SystemExit("points.csv masih kosong. Isi dulu titik ruas jalan.")
@@ -84,8 +91,19 @@ def fetch_weather():
 
 
 def fetch_point(point, api_key):
-    params = {"point": f"{point['lat']},{point['lon']}", "unit": "KMPH", "key": api_key}
-    data = get_json(TOMTOM_URL, params)["flowSegmentData"]
+    lat = float(str(point["lat"]).strip().replace(",", "."))
+    lon = float(str(point["lon"]).strip().replace(",", "."))
+    params = {"point": f"{lat},{lon}", "unit": "KMPH", "key": api_key}
+    for attempt in range(RETRIES + 1):
+        try:
+            data = get_json(TOMTOM_URL, params)["flowSegmentData"]
+            break
+        except urllib.error.HTTPError as exc:
+            # 400/403/429 bisa muncul karena batas request per detik: tunggu, coba lagi
+            if exc.code in (400, 403, 429) and attempt < RETRIES:
+                time.sleep(RETRY_WAIT * (attempt + 1))
+                continue
+            raise
     return {
         "current_speed": data.get("currentSpeed"),
         "free_flow_speed": data.get("freeFlowSpeed"),
@@ -98,7 +116,7 @@ def fetch_point(point, api_key):
 
 
 def collect():
-    api_key = os.environ.get("TOMTOM_API_KEY")
+    api_key = os.environ.get("TOMTOM_API_KEY", "").strip().strip('"').strip("'")
     if not api_key:
         raise SystemExit("TOMTOM_API_KEY belum di-set.")
 
@@ -126,6 +144,7 @@ def collect():
         rows.append(row)
         status = row["error"] or f"{row['current_speed']}/{row['free_flow_speed']} km/h"
         print(f"[{p['point_id']}] {status}")
+        time.sleep(DELAY_BETWEEN_POINTS)
 
     return timestamp, rows
 
