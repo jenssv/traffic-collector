@@ -4,7 +4,7 @@ on:
   schedule:
     # Tiap 15 menit (jam UTC, tidak masalah karena data dicatat dalam WIB).
     # Menit 7/22/37/52 dipilih agar tidak bertabrakan dengan antrean di menit :00.
-    - cron: "7,22,37,52 * * * *"
+    - cron: "7 * * * *"
   workflow_dispatch: # tombol "Run workflow" untuk tes manual
 
 permissions:
