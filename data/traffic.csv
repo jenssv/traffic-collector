@@ -1,0 +1,13 @@
+timestamp_wib,point_id,name,lat,lon,current_speed,free_flow_speed,current_travel_time,free_flow_travel_time,confidence,road_closure,frc,precipitation_mm,temperature_c,error
+2026-11-17 18:46:35,P01,Jl. MH Thamrin (Sarinah),-6.18750,106.82300,7,23,821,249,0.694938,False,FRC1,0.1,28.6,
+2026-11-17 18:46:35,P02,Jl. Jend. Sudirman (Senayan),-6.225002, 106.804490,,,,,,,,0.1,28.6,HTTP 400
+2026-11-17 18:46:35,P03,Jl. Gatot Subroto (Kuningan),-6.231927, 106.821155,,,,,,,,0.1,28.6,HTTP 400
+2026-11-17 18:46:35,P04,Jl. HR Rasuna Said (Kuningan),-6.219936, 106.831846,,,,,,,,0.1,28.6,HTTP 400
+2026-11-17 18:46:35,P05,Jl. TB Simatupang (Cilandak),-6.292619, 106.799921,,,,,,,,0.1,28.6,HTTP 400
+2026-11-17 18:46:35,P06,Jl. RS Fatmawati (Cipete),-6.276328, 106.797601,,,,,,,,0.1,28.6,HTTP 400
+2026-11-17 18:46:35,P07,Jl. Kebon Jeruk Raya (BINUS Anggrek),-6.198840, 106.781818,,,,,,,,0.1,28.6,HTTP 400
+2026-11-17 18:46:35,P08,Jl. Panjang (Kebon Jeruk),-6.200032, 106.769163,,,,,,,,0.1,28.6,HTTP 400
+2026-11-17 18:46:35,P09,Jl. Letjen S. Parman (Slipi),-6.189984, 106.797332,,,,,,,,0.1,28.6,HTTP 400
+2026-11-17 18:46:35,P10,Jl. Daan Mogot (Pesing),-6.162925, 106.773751,,,,,,,,0.1,28.6,HTTP 400
+2026-11-17 18:46:35,P11,Jl. Gunung Sahari (Pasar Baru),-6.156301, 106.836779,,,,,,,,0.1,28.6,HTTP 400
+2026-11-17 18:46:35,P12,Tol Dalam Kota arah selatan (Cawang),-6.224093,106.874786,13,75,727,126,0.908448,False,FRC0,0.1,28.6,
